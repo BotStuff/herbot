@@ -12,7 +12,6 @@
     "java": "0.7.0",
     "node-gyp": "^3.4.0",
     "node-java": "^1.0.1",
-    "rebuild": "^0.1.2",
-    "stanford-corenlp": "^1.0.0"
+    "rebuild": "^0.1.2"
   }
 }
