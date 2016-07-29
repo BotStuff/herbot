@@ -23,10 +23,9 @@ export default (result) => {
     if (_.has(element, 'children')) {
       let depth = element.children.length;
       for (let i = 0; i <= depth - 1; i++) {
-        debugger;
-        types.push(element.children[1].type.match(/[A-Z]/ig).join(''))
+        let current = element.children[i].type.match(/[A-Z]/ig);
+        current ? types.push(current.join('')) : null;
       }
-      debugger;
       findOne(types, ['NP', 'VP'])
       return types.includes('NP', 'VP') ? element : false
     } else {
@@ -35,7 +34,6 @@ export default (result) => {
   }
 
   const crawler = (segment) => {
-    // debugger;
     mapStructure(segment) ? getWord(segment) : null;
     if (_.has(segment, 'children')) {
       let depth = segment.children.length;
