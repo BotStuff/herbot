@@ -9,32 +9,46 @@ export default (result) => {
   const sentence = toSentence[0];
 
   const getWord = (element) => {
+    debugger;
+  }
+
+  var findOne = function (haystack, arr) {
+    return arr.some(function (v) {
+      return haystack.indexOf(v) >= 0;
+    });
+  };
+
+  const mapStructure = (element) => {
+    let types = [];
     if (_.has(element, 'children')) {
       let depth = element.children.length;
       for (let i = 0; i <= depth - 1; i++) {
-        getWord(element.children[i])
+        debugger;
+        types.push(element.children[1].type.match(/[A-Z]/ig).join(''))
       }
-    } else {
       debugger;
-      words.push(element.word)
+      findOne(types, ['NP', 'VP'])
+      return types.includes('NP', 'VP') ? element : false
+    } else {
+      return false;
     }
   }
 
-  // iterate sentence structure
-  sentence.parsedTree.children[0].children.forEach((element) => {
-    getWord(element);
-  })
+  const crawler = (segment) => {
+    // debugger;
+    mapStructure(segment) ? getWord(segment) : null;
+    if (_.has(segment, 'children')) {
+      let depth = segment.children.length;
+      for (let i = 0; i <= depth - 1; i++) {
+        crawler(segment.children[i])
+      }
+    }
+  }
 
-  //
-  //   // find match with recognized pattern
-  //   _.forIn(identities,
-  //     (value, key) => {
-  //       tree.forEach((combination) => {
-  //         if(_.isEqual(combination, value))
-  //           endResult.push({ pattern: key, phrase: word.join(' ') })
-  //       })
-  //     })
-  // })
+
+  sentence.parsedTree.children.forEach((element) => {
+    crawler(element);
+  })
 }
 
 const identities = {
