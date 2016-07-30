@@ -10,11 +10,20 @@ export default (result) => {
 
   const getWord = (element) => {
     debugger;
+    if (_.has(element, 'children')) {
+      let depth = element.children.length;
+      for (let i = 0; i <= depth - 1; i++) {
+        getWord([element.children[i]])
+      }
+    } else {
+      words.push({ type: element.type, phrase: element.word });
+      // insert phrase preceeded by main type
+    }
   }
 
-  var findOne = function (haystack, arr) {
-    return arr.some(function (v) {
-      return haystack.indexOf(v) >= 0;
+  const findOne = function (arr1, arr2) {
+    return arr2.some(function (v) {
+      return arr1.indexOf(v) >= 0;
     });
   };
 
@@ -27,14 +36,20 @@ export default (result) => {
         current ? types.push(current.join('')) : null;
       }
       findOne(types, ['NP', 'VP'])
-      return types.includes('NP', 'VP') ? element : false
+      return types.includes('NP', 'VP') ? [element.children[0], element.children[1]] : false;
     } else {
       return false;
     }
   }
 
   const crawler = (segment) => {
-    mapStructure(segment) ? getWord(segment) : null;
+    const hasPattern = mapStructure(segment);
+    if (hasPattern) {
+      hasPattern.forEach((segment) => {
+        getWord(segment);
+      })
+    }
+
     if (_.has(segment, 'children')) {
       let depth = segment.children.length;
       for (let i = 0; i <= depth - 1; i++) {
@@ -46,13 +61,10 @@ export default (result) => {
 
   sentence.parsedTree.children.forEach((element) => {
     crawler(element);
+    debugger;
   })
 }
 
 const identities = {
   'Noun Definition': ['NP', 'VP']
 }
-
-//
-// A black hole is a region of spacetime exhibiting such strong gravitational effects that nothing—including particles and
-// electromagnetic radiation such as light—can escape from inside it
