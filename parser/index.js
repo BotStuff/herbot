@@ -2,41 +2,50 @@ import _ from 'lodash';
 
 export default (result) => {
 
-  let words = [];
+  let concepts = [];
 
   const toSentence = result.document.sentences.sentence
-
   const sentence = toSentence[0];
 
   const getWord = (element) => {
-    debugger;
+    let depth = 0;
     if (_.has(element, 'children')) {
-      let depth = element.children.length;
+      depth = element.children.length;
       for (let i = 0; i <= depth - 1; i++) {
         getWord([element.children[i]])
       }
+    } else if (_.has(element[0], 'children')) {
+      depth = element[0].children.length;
+      for (let i = 0; i <= depth - 1; i++) {
+        getWord([element[0].children[i]])
+      }
     } else {
-      words.push({ type: element.type, phrase: element.word });
-      // insert phrase preceeded by main type
+      concepts[concepts.length - 1].phrase.push(element[0].word);
     }
   }
 
-  const findOne = function (arr1, arr2) {
-    return arr2.some(function (v) {
-      return arr1.indexOf(v) >= 0;
-    });
+  const isMatch = function (types) {
+    _.forEach(patterns, (value, key) => {
+      if (value === types.toString()) {
+        return key;
+      }
+    })
   };
 
-  const mapStructure = (element) => {
+  const mapStructure = (segment) => {
     let types = [];
-    if (_.has(element, 'children')) {
-      let depth = element.children.length;
+    if (_.has(segment, 'children')) {
+      let depth = segment.children.length;
       for (let i = 0; i <= depth - 1; i++) {
-        let current = element.children[i].type.match(/[A-Z]/ig);
+        let current = segment.children[i].type.match(/[A-Z]/ig);
         current ? types.push(current.join('')) : null;
       }
-      findOne(types, ['NP', 'VP'])
-      return types.includes('NP', 'VP') ? [element.children[0], element.children[1]] : false;
+      debugger;
+      return isMatch(types) ?
+        {
+          type: segment.type,
+          segments: [segment.children[0], segment.children[1]]
+        } : false;
     } else {
       return false;
     }
@@ -44,9 +53,11 @@ export default (result) => {
 
   const crawler = (segment) => {
     const hasPattern = mapStructure(segment);
+    debugger;
     if (hasPattern) {
       hasPattern.forEach((segment) => {
-        getWord(segment);
+        concepts.push({ type: segment.type, phrase: [] })
+        getWordFor(segment);
       })
     }
 
@@ -65,6 +76,6 @@ export default (result) => {
   })
 }
 
-const identities = {
-  'Noun Definition': ['NP', 'VP']
+const patterns = {
+  'NounDefinition': 'NP,VP',
 }
