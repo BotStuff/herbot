@@ -25,11 +25,11 @@ export default (result) => {
   }
 
   const isMatch = function (types) {
-    _.forEach(patterns, (value, key) => {
-      if (value === types.toString()) {
+    for (var key in patterns) {
+      if (patterns[key] === types.toString()) {
         return key;
       }
-    })
+    }
   };
 
   const mapStructure = (segment) => {
@@ -40,12 +40,11 @@ export default (result) => {
         let current = segment.children[i].type.match(/[A-Z]/ig);
         current ? types.push(current.join('')) : null;
       }
-      debugger;
       return isMatch(types) ?
-        {
-          type: segment.type,
-          segments: [segment.children[0], segment.children[1]]
-        } : false;
+      {
+        type: segment.type,
+        segments: [segment.children[0], segment.children[1]]
+      } : false;
     } else {
       return false;
     }
@@ -53,9 +52,8 @@ export default (result) => {
 
   const crawler = (segment) => {
     const hasPattern = mapStructure(segment);
-    debugger;
     if (hasPattern) {
-      hasPattern.forEach((segment) => {
+      hasPattern.segments.forEach((segment) => {
         concepts.push({ type: segment.type, phrase: [] })
         getWordFor(segment);
       })
