@@ -3,11 +3,24 @@ import _ from 'lodash';
 export default (result) => {
 
   let concepts = [];
-  let currentVerb;
-  let currentNoun;
+  let current = {};
+
+  let searched = 'Black hole';
+  let shortTermMemory = {};
+
+  let brain = {
+     'black hole': {
+       definitions: [],
+     }
+  };
+
+  const learn = (element) => {
+    debugger;
+    // shortTermMemory[element[0].type] = element[0].word;
+  }
 
   const toSentence = result.document.sentences.sentence
-  const sentence = toSentence[0];
+  const sentence = toSentence;
 
   const loopNounDefinition = (element) => {
     const children = element.children;
@@ -23,11 +36,11 @@ export default (result) => {
     } else if (_.has(element[0], 'children')) {
       loopNounDefinition(element[0])
     } else {
+      learn(element[0])
       concepts[concepts.length - 1].phrase.push(element[0].word);
     }
   }
 
-  // =====
   const isMatch = function (types) {
     for (var key in patterns) {
       if (patterns[key] === types.toString()) {
@@ -58,11 +71,10 @@ export default (result) => {
       return false;
     }
   }
-  // =====
 
-  // const storeTempValues = () => {
-  //   concepts[concepts.length -1].type
-  // }
+  const storeTempValues = (segment) => {
+    current[segment.type] = _.last(concepts).phrase.join(' ');
+  }
 
   const crawler = (segment) => {
     const hasPattern = mapStructure(segment);
@@ -70,8 +82,8 @@ export default (result) => {
       hasPattern.segments.forEach((segment) => {
         concepts.push({ type: segment.type, phrase: [] })
         parseNounDefinition(segment);
-        // storeTempValues()
-        debugger;
+        storeTempValues(segment)
+        // ...?
       })
     }
 
@@ -82,7 +94,6 @@ export default (result) => {
       }
     }
   }
-
 
   sentence.parsedTree.children.forEach((element) => {
     crawler(element);
