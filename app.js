@@ -11,7 +11,7 @@ Despite its invisible interior, the presence of a black hole can be inferred thr
 
 On 11 February 2016, the LIGO collaboration announced the first observation of gravitational waves; because these waves were generated from a black hole merger it was the first ever direct detection of a binary black hole merger.[6] On 15 June 2016, a second detection of a gravitational wave event from colliding black holes was announced.[7]`
 
-// const sentence = `If you were to take a step into a black hole, your body would most closely resemble "toothpaste being extruded out of the tube," said Charles Liu, an astrophysicist who works at the American Museum of Natural History's Hayden Planetarium.`
+// const sentence = `A region of spacetime with strong gravitational effects is called a black hole`
 
 const NLP = new StanfordSimpleNLP.StanfordSimpleNLP( function(err) {
   NLP.process(sentence, function(err, result) {

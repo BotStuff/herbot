@@ -9,23 +9,25 @@ export default (result) => {
   const toSentence = result.document.sentences.sentence
   const sentence = toSentence[0];
 
+  const loopNounDefinition = (element) => {
+    const children = element.children;
+    for (let i = 0; i <= children.length - 1; i++) {
+      parseNounDefinition([children[i]])
+    }
+  }
+
   const parseNounDefinition = (element) => {
     let depth = 0;
     if (_.has(element, 'children')) {
-      depth = element.children.length;
-      for (let i = 0; i <= depth - 1; i++) {
-        parseNounDefinition([element.children[i]])
-      }
+      loopNounDefinition(element)
     } else if (_.has(element[0], 'children')) {
-      depth = element[0].children.length;
-      for (let i = 0; i <= depth - 1; i++) {
-        parseNounDefinition([element[0].children[i]])
-      }
+      loopNounDefinition(element[0])
     } else {
       concepts[concepts.length - 1].phrase.push(element[0].word);
     }
   }
 
+  // =====
   const isMatch = function (types) {
     for (var key in patterns) {
       if (patterns[key] === types.toString()) {
@@ -34,14 +36,19 @@ export default (result) => {
     }
   };
 
+  const loopForStructure = (segment, types) => {
+
+    const iterated = segment.children;
+    for (let i = 0; i <= iterated.length - 1; i++) {
+      let current = iterated[i].type.match(/[A-Z]/ig);
+      current ? types.push(current.join('')) : null;
+    }
+  }
+
   const mapStructure = (segment) => {
     let types = [];
     if (_.has(segment, 'children')) {
-      let depth = segment.children.length;
-      for (let i = 0; i <= depth - 1; i++) {
-        let current = segment.children[i].type.match(/[A-Z]/ig);
-        current ? types.push(current.join('')) : null;
-      }
+      loopForStructure(segment, types)
       return isMatch(types) ?
       {
         type: segment.type,
@@ -51,6 +58,11 @@ export default (result) => {
       return false;
     }
   }
+  // =====
+
+  // const storeTempValues = () => {
+  //   concepts[concepts.length -1].type
+  // }
 
   const crawler = (segment) => {
     const hasPattern = mapStructure(segment);
@@ -58,7 +70,8 @@ export default (result) => {
       hasPattern.segments.forEach((segment) => {
         concepts.push({ type: segment.type, phrase: [] })
         parseNounDefinition(segment);
-        // when promise parseND ends set temp values for NP and VP
+        // storeTempValues()
+        debugger;
       })
     }
 
