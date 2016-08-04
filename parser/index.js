@@ -1,4 +1,5 @@
 import _ from 'lodash';
+// import only methods needed
 
 export default (result) => {
 
@@ -6,17 +7,23 @@ export default (result) => {
   let current = {};
 
   let searched = 'Black hole';
-  let shortTermMemory = {};
 
-  let brain = {
+  let shortMemory = {};
+
+  let memory = {
      'black hole': {
-       definitions: [],
+       definitions: [
+         //...?
+       ],
      }
   };
 
   const learn = (element) => {
-    debugger;
-    // shortTermMemory[element[0].type] = element[0].word;
+    shortMemory[element.type] = element.word.toLowerCase();
+    if (_.isEqual(_.keys(shortMemory), ['JJ', 'NNS']) || _.isEqual(_.keys(shortMemory), ['JJ', 'NN'])) {
+      // when to start storing info 
+      debugger;
+    }
   }
 
   const toSentence = result.document.sentences.sentence
