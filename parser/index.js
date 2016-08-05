@@ -6,14 +6,14 @@ export default (result) => {
   let concepts = [];
   let current = {};
 
-  let searched = 'Black hole';
+  let searched = 'black hole';
 
   let shortMemory = {};
 
   let memory = {
      'black hole': {
        definitions: [
-         //...?
+
        ],
      }
   };
@@ -21,9 +21,15 @@ export default (result) => {
   const learn = (element) => {
     shortMemory[element.type] = element.word.toLowerCase();
     if (_.isEqual(_.keys(shortMemory), ['JJ', 'NNS']) || _.isEqual(_.keys(shortMemory), ['JJ', 'NN'])) {
-      // when to start storing info 
-      debugger;
+      memory[searched].definitions.push({noun: `${shortMemory.JJ} ${shortMemory.NN || shortMemory.NNS}`})
+    } else if (_.last(memory[searched].definitions) && _.last(memory[searched].definitions).hasOwnProperty('noun') && shortMemory.hasOwnProperty('VBP')) {
+      _.last(memory[searched].definitions)['verb'] = element.word.toLowerCase();
+    } else if (_.last(memory[searched].definitions && _.last(memory[searched].definitions).hasOwnProperty('verb') && _.last(memory[searched].definitions)['verb'] === '') {
+      if (element.word.toLowerCase() !== 'that') {
+        _.last(memory[searched].definitions)['verb'] += element.word.toLowerCase();
+      }
     }
+    debugger;
   }
 
   const toSentence = result.document.sentences.sentence
