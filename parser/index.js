@@ -24,7 +24,7 @@ export default (result) => {
       memory[searched].definitions.push({noun: `${shortMemory.JJ} ${shortMemory.NN || shortMemory.NNS}`})
     } else if (_.last(memory[searched].definitions) && _.last(memory[searched].definitions).hasOwnProperty('noun') && shortMemory.hasOwnProperty('VBP')) {
       _.last(memory[searched].definitions)['verb'] = element.word.toLowerCase();
-    } else if (_.last(memory[searched].definitions && _.last(memory[searched].definitions).hasOwnProperty('verb') && _.last(memory[searched].definitions)['verb'] === '') {
+    } else if (_.last(memory[searched].definitions) && _.last(memory[searched].definitions).hasOwnProperty('verb') && _.last(memory[searched].definitions)['verb'] === '') {
       if (element.word.toLowerCase() !== 'that') {
         _.last(memory[searched].definitions)['verb'] += element.word.toLowerCase();
       }
